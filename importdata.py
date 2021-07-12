@@ -9,6 +9,7 @@ cursor = db.cursor()
 
 movies_metadata = pd.read_csv('movies_metadata.csv')
 keyword = pd.read_csv('keywords.csv')
+credits = pd.read_csv('credits.csv')
 
 class Movie:
     def __init__(self, movieID, Title, Overview, Keywords, Lang, isAdultFilm, Budget, collection_dict = None):
@@ -93,9 +94,36 @@ def parse_genre():
                 db.commit()
         except:
             continue
+def parse_crew_cast():
+    for index, row in credits.iterrows():
+        try:    
+            cast = eval(row['cast'])
+            crew = eval(row['crew'])
+            id = (int)(row['id'])
+            for item in cast:
+                gender = 'other'
+                if item['gender'] == 1:
+                    gender = 'female'
+                elif item['gender'] == 2:
+                    gender = 'male'
+                cmd = 'INSERT INTO CastMember VALUES({}, \'{}\', \'{}\')'.format(item['cast_id'], item['name'], gender)
+                cursor.execute(cmd)
+                db.commit()
+                cmd = 'INSERT INTO Acts VALUES({}, {}, \'{}\')'.format(id, item['cast_id'], item['character'])
+                cursor.execute(cmd)
+                db.commit()
+            for item in crew:
+                cmd = 'INSERT INTO CrewMember VALUES ({}, \'{}\')'.format(item['credit_id'], item['name'])
+                cursor.execute(cmd)
+                db.commit()
+                cmd = 'INSERT INTO WorksOn VALUES ({}, {}, \'{}\')'.format(id, item['credit_id'], item['job'])
+                cursor.execute(cmd)
+                db.commit()
+        except:
+            continue
 
-
+       
 if __name__ == '__main__':
     #parse_movie_metadata()
-    parse_genre()
-    pass
+    #parse_genre()
+    parse_crew_cast()
