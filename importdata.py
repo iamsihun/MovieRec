@@ -94,36 +94,57 @@ def parse_genre():
                 db.commit()
         except:
             continue
-def parse_crew_cast():
+def parse_cast():
     for index, row in credits.iterrows():
         try:    
             cast = eval(row['cast'])
             crew = eval(row['crew'])
             id = (int)(row['id'])
-            for item in cast:
-                gender = 'other'
-                if item['gender'] == 1:
-                    gender = 'female'
-                elif item['gender'] == 2:
-                    gender = 'male'
-                cmd = 'INSERT INTO CastMember VALUES({}, \'{}\', \'{}\')'.format(item['cast_id'], item['name'], gender)
-                cursor.execute(cmd)
-                db.commit()
-                cmd = 'INSERT INTO Acts VALUES({}, {}, \'{}\')'.format(id, item['cast_id'], item['character'])
-                cursor.execute(cmd)
-                db.commit()
-            for item in crew:
-                cmd = 'INSERT INTO CrewMember VALUES ({}, \'{}\')'.format(item['credit_id'], item['name'])
-                cursor.execute(cmd)
-                db.commit()
-                cmd = 'INSERT INTO WorksOn VALUES ({}, {}, \'{}\')'.format(id, item['credit_id'], item['job'])
-                cursor.execute(cmd)
-                db.commit()
         except:
             continue
 
-       
+        for item in cast:
+            gender = 'other'
+            if item['gender'] == 1:
+                gender = 'female'
+            elif item['gender'] == 2:
+                gender = 'male'
+            cmd = 'INSERT INTO CastMember VALUES(\'{}\', \'{}\', \'{}\')'.format(item['cast_id'], item['name'], gender)
+            try:    
+                cursor.execute(cmd)
+            except:
+                pass
+            db.commit()
+            cmd = 'INSERT INTO Acts VALUES({}, \'{}\', \'{}\')'.format(id, item['cast_id'], item['character'])
+            try:    
+                cursor.execute(cmd)
+            except:
+                pass
+            db.commit()
+
+def parse_crew():
+    for index, row in credits.iterrows():
+        try:
+            crew = eval(row['crew'])
+            id = (int)(row['id'])
+        except:
+            continue
+        #print(crew)
+        for item in crew:
+            cmd = 'INSERT INTO CrewMember(crewMemberID, crewName) VALUES(\'{}\', \'{}\')'.format(item['credit_id'], item['name'])
+            try:
+                cursor.execute(cmd)
+            except:
+                pass
+            db.commit()
+            cmd = 'INSERT INTO WorksOn(movieID, crewMemberID, Job) VALUES({}, \'{}\', \'{}\')'.format(id, item['credit_id'], item['job'])
+            try:
+                cursor.execute(cmd)
+            except:
+                pass
+            db.commit()
 if __name__ == '__main__':
     #parse_movie_metadata()
     #parse_genre()
-    parse_crew_cast()
+    #parse_cast()
+    parse_crew()
