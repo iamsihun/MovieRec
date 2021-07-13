@@ -18,7 +18,7 @@ class Movie:
         self.Overview = Overview
         self.Keywords = Keywords
         self.Lang = Lang
-        self.isAdultFilm = 1 if isAdultFilm == True else 0
+        self.isAdultFilm = isAdultFilm
         self.Budget = Budget
         self.collection_id = self.collection_name = None
         if collection_dict is not None:
@@ -28,13 +28,24 @@ class Movie:
         cmd = None
         if self.collection_id:
             col_cmd = 'INSERT INTO Collection VALUES({}, \'{}\')'.format(self.collection_id, self.collection_name)
-            cursor.execute(col_cmd)
+            try:
+                cursor.execute(col_cmd)
+            except:
+                pass
             db.commit()
             cmd = 'INSERT INTO Movie VALUES({}, \'{}\', \'{}\', \'{}\', \'{}\', {}, {}, {})'.format(self.movieID, self.Title, self.Overview, self.Keywords, self.Lang, self.isAdultFilm, self.Budget, self.collection_id)
+            try:
+                cursor.execute(cmd)
+            except:
+                pass
+            db.commit()
         else:
             cmd = 'INSERT INTO Movie(movieID, Title, Overview, Keywords, Lang, isAdultFilm, Budget) VALUES({}, \'{}\', \'{}\', \'{}\', \'{}\', {}, {})'.format(self.movieID, self.Title, self.Overview, self.Keywords, self.Lang, self.isAdultFilm, self.Budget)
-        cursor.execute(cmd)
-        db.commit()
+            try:
+                cursor.execute(cmd)
+            except:
+                pass
+            db.commit()
 
 
 def parse_movie_metadata():
@@ -59,17 +70,16 @@ def parse_movie_metadata():
             overview = (str)(row['overview'])
             kw = keyword.loc[keyword.id == id, 'keywords'].values[0]
             kw = eval(kw)
-            keyword_list = []
-            for item in kw:
-                keyword_list.append(item['name'])
-            keyword_list = json.dumps(keyword_list)
-            m = Movie(id, title, overview, keyword_list, lang, adult, budget, collection_dict)
-            try:
-                m.insert()
-            except:
-                pass
         except:
-            pass
+            continue
+
+        keyword_list = []
+        for item in kw:
+            keyword_list.append(item['name'])
+        keyword_list = json.dumps(keyword_list)
+
+        m = Movie(id, title, overview, keyword_list, lang, adult, budget, collection_dict)
+        m.insert()
 
 def parse_genre():
     for index, row in movies_metadata.iterrows():
@@ -98,7 +108,6 @@ def parse_cast():
     for index, row in credits.iterrows():
         try:    
             cast = eval(row['cast'])
-            crew = eval(row['crew'])
             id = (int)(row['id'])
         except:
             continue
@@ -109,13 +118,13 @@ def parse_cast():
                 gender = 'female'
             elif item['gender'] == 2:
                 gender = 'male'
-            cmd = 'INSERT INTO CastMember VALUES(\'{}\', \'{}\', \'{}\')'.format(item['cast_id'], item['name'], gender)
+            cmd = 'INSERT INTO CastMember VALUES({}, \'{}\', \'{}\')'.format((int)(item['cast_id']), item['name'], gender)
             try:    
                 cursor.execute(cmd)
             except:
                 pass
             db.commit()
-            cmd = 'INSERT INTO Acts VALUES({}, \'{}\', \'{}\')'.format(id, item['cast_id'], item['character'])
+            cmd = 'INSERT INTO Acts VALUES({}, {}, \'{}\')'.format(id, (int)(item['cast_id']), item['character'])
             try:    
                 cursor.execute(cmd)
             except:
@@ -147,4 +156,5 @@ if __name__ == '__main__':
     #parse_movie_metadata()
     #parse_genre()
     #parse_cast()
-    parse_crew()
+    #parse_crew()
+    pass
