@@ -2,20 +2,16 @@
 
 import mysql.connector as conn
 
-
 db = conn.connect(host = '35.202.71.75', user = 'root', password = 'movierec', database = 'movierec')
-
 cursor = db.cursor()
-
-
 
 def search_title(text):
     # Code to search database for movies by title:
-    cmd = "SELECT Title FROM Movie WHERE Title LIKE \'{}\';".format(text)
+    cmd = "SELECT Title FROM Movie WHERE Title LIKE \'%{}%\';".format(text)
     print(cmd)
     cursor.execute(cmd)
     results = cursor.fetchall()
-    print(results)
+    # print(results)
     return list(results)
 
 #get maxID of movies
@@ -24,7 +20,6 @@ def get_maxID_movies():
     cursor.execute(cmd)
     result = cursor.fetchall()
     return result[0][0]
-
 
 #add a movie record, id will automatically be set to 1+max
 #args: title, overview, language
