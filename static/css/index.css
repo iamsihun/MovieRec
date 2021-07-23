@@ -1,0 +1,16 @@
+body {
+    background-color: lightblue;
+    text-align: center;
+}
+
+h1 {
+    text-decoration: underline;
+}
+
+#input-box {
+    background-color: white;
+}
+
+#output-box {
+    background-color: white;
+}
