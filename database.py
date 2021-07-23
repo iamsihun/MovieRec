@@ -8,7 +8,7 @@ cursor = db.cursor()
 def search_title(text):
     # Code to search database for movies by title:
     cmd = "SELECT Title FROM Movie WHERE Title LIKE \'%{}%\';".format(text)
-    print(cmd)
+    # print(cmd)
     cursor.execute(cmd)
     results = cursor.fetchall()
     # print(results)

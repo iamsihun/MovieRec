@@ -1,5 +1,21 @@
 const request = new XMLHttpRequest();
 
+function login() {
+    let usernameBox = document.getElementById("usernameBox");
+    let username = usernameBox.value;
+    /*
+    let url = "http://127.0.0.1:5000/login/" + username;
+    request.open("GET", url);
+    request.responseType = 'json';
+
+    request.onload = function() {
+        if (request.status >= 400) return;
+        results = request.response;
+    };
+
+    request.send();*/
+}
+
 function search() {
     let searchBox = document.getElementById("search-box")
     let text = searchBox.value;
@@ -25,8 +41,16 @@ function search() {
             let li = document.createElement("li");
             li.id = "result" + numResults,toString();
             li.className = "search-result";
-            li.innerHTML = results[key];
+            
+            let title = document.createElement("p");
+            title.innerHTML = results[key];
+            li.appendChild(title);
 
+            let addButton = document.createElement("button");
+            addButton.innerHTML = "Add Movie";
+            addButton.addEventListener("click", function() {addMovie(title.innerHTML)});
+            li.appendChild(addButton);
+            
             ol.appendChild(li);
             numResults++;
         }
@@ -34,3 +58,13 @@ function search() {
 
     request.send();
 }
+
+function addMovie(movieName) {
+    let savedMovies = document.getElementById("saved-movies");
+    let movie = document.createElement("li");
+    movie.className = "movie";
+    movie.innerHTML = movieName;
+    savedMovies.appendChild(movie);
+}
+
+function loadMovies(username) {}

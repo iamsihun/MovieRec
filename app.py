@@ -7,41 +7,29 @@ app = Flask(__name__)
 def index():
   return render_template('index.html'), 200
 
+@app.route('/login/username')
+def login(username):
+  ...
+
+@app.route('/signup/username', methods=['POST'])
+def signup(username):
+  ...
+
 @app.route('/search/<text>')
 def search(text):
   try:
     results = database.search_title(text)
-    print(results)
     return jsonify(results), 200
   except:
     return "", 404
 
-@app.route('/insert', methods=['POST'])
-def insert():
-  title = ...
-  overview = ...
-  language = ...
-  try:
-    database.insert_movie(title, overview, language)
-    return '', 200
-  except:
-    return '', 404
+@app.route('/addMovie/<movieID>', methods=['PUT'])
+def addMovie(movieID):
+  ...
 
-@app.route('/update/<id>/<new_title>', methods=['PUT'])
-def update(id, new_title):
-  try:
-    database.update_movie_title(id, new_title)
-    return '', 200
-  except:
-    return '', 404
-
-@app.route('/delete/<id>', methods=['DELETE'])
-def delete(id):
-  try:
-    database.delete_movie(id)
-    return '', 200
-  except:
-    return '', 404
+@app.route('/deleteMovie<movieID>', methods=['DELETE'])
+def deleteMovie(movieID):
+  ...
 
 @app.route('/aq1')
 def aq1():

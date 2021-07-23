@@ -13,13 +13,25 @@
     </header>
 
     <main>
-        <div id="grid-container">
-            <div id="input-box">
-                <h3>Input</h3>
+        <div class="grid-container">
+            <div id="account-manager">
+                <h3>Account Management</h3>
+    
+                <p>Current User: <p id="current-user"></p></p>
+    
+                <form>
+                    <input type="text" id="usernameBox" placeholder="Enter Username...">
+                    <button id="login-button" onclick="login()">Submit</button>
+                </form>
+                            
+                <br>
+                <button onclick="loadMovies()">View Saved Movies</button>
+                <button id="delete-button" onclick="deleteUser()">Delete Current Account</button>
             </div>
-            
-            <div id="output-box">
-                <h3>Output</h3>
+    
+            <div id="saved-movies-box">
+                <h3>Saved Movies</h3>
+                <ol id="saved-movies"></ol>
             </div>
         </div>
 

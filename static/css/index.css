@@ -3,8 +3,36 @@ body {
     text-align: center;
 }
 
-h1, h3 {
+h1, h3, h5 {
     text-decoration: underline;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    padding: 1%;
+}
+
+#account-manager {
+    background-color: whitesmoke;
+    border: 1px solid black;
+}
+
+#saved-movies-box {
+    background-color: lightgreen;
+    border: 1px solid black;
+    margin: 1%;
+    padding: 1%;
+}
+
+#saved-movies {
+    list-style: none;
+    text-align: left;
+    padding: 1%;
+}
+
+.movie {
+    padding: 1%;
 }
 
 #search-results {
@@ -14,25 +42,10 @@ h1, h3 {
     list-style: none;
     margin: 1%;
     padding: 1%;
-    min-height: 5rem;
+    min-height: 10rem;
 }
 
-#grid-container {
-    display: grid;
-    grid-template-columns: 50% 50%;
-    padding: 1%;
-}
-
-#input-box {
-    background-color: lightgreen;
-    border: 1px solid black;
-    margin: 1%;
-    padding: 1%;
-}
-
-#output-box {
-    background-color: lightcoral;
-    border: 1px solid black;
-    margin: 1%;
-    padding: 1%;
+.search-result {
+    margin: .5%;
+    padding: .5%;
 }
