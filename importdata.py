@@ -152,6 +152,7 @@ def parse_crew():
             except:
                 pass
             db.commit()
+            
 if __name__ == '__main__':
     #parse_movie_metadata()
     #parse_genre()
