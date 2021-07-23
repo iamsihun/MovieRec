@@ -56,5 +56,27 @@ def advanced_query_2():
    cursor.execute(cmd)
    return list(cursor.fetchall())
 
+# Check if user exists. Add entry to 'Users' if they don't exist
+def userExists(username):
+    cmd = 'SELECT EXISTS(SELECT * FROM Users WHERE username = \'{}\')'.format(username)
+    print(cmd)
+    cursor.execute(cmd)
+    results = cursor.fetchall()
+    if results[0][0] == 0: #username does NOT exist
+        cmd = 'INSERT INTO Users(username, movieList) VALUES(\'{}\', NULL)'.format(username) 
+        print(cmd)
+        cursor.execute(cmd)
+        db.commit()
+        return False
+    else:   #username exists
+        return True
+
+#returns movie list of user (ASSUMING USER EXISTS)
+def movieList(username):
+    cmd = 'SELECT movieList FROM Users WHERE username=\'{}\''.format(username) #return user's movielist
+    cursor.execute(cmd)
+    results = cursor.fetchall()
+    return results
+
 # if __name__ == '__main__':
 #     print(get_maxID_movies())
