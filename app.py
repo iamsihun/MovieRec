@@ -30,7 +30,7 @@ def deleteUser(username):
   except:
     return "Could not delete user.", 404
 
-# Returns the movie list of the given user. Returns None if the user doesn't exist.
+# Returns the movie list of the given user:
 @app.route('/getMovieList/<username>')
 def getMovieList(username):
   try:
