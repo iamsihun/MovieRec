@@ -1,6 +1,5 @@
 const request = new XMLHttpRequest();
 let currentUser = "";
-let savedMovies = document.getElementById("saved-movies-list");
 
 function createUser() {
     let usernameBox = document.getElementById("userToCreate");
@@ -33,9 +32,15 @@ function deleteUser() {
     request.send();
 }
 
-function getMovieList() {
-    let usernameBox = document.getElementById("userToSwitchTo");
-    let username = usernameBox.value;
+function getMovieList(username) {
+    if (username == null) {
+        let usernameBox = document.getElementById("userToSwitchTo");
+        username = usernameBox.value;
+    }
+
+    let ol = document.getElementById("saved-movies-list");
+    ol.innerHTML = ""; // Resets Saved Movies List
+
     let url = "http://127.0.0.1:5000/getMovieList/" + username;
     request.open("GET", url)
     request.responseType = 'json';
@@ -44,38 +49,56 @@ function getMovieList() {
         if (request.status >= 400) return;
         currentUser = username;
         document.getElementById("current-user").innerHTML = "Current User: <strong>" + currentUser + "</strong>";
-        movieList = request.response;
-        numMovies = 0;
 
+        let movieList = request.response;
         for (var key in movieList) {
-            if (!results.hasOwnProperty(key)) {
+            if (!movieList.hasOwnProperty(key)) {
                 break;
             }
+
+            let movieID = movieList[key][0]
             
             let li = document.createElement("li");
-            li.id = "movie" + numMovies.toString();
+            li.id = movieID;
             li.className = "movie";
             
             let title = document.createElement("p");
-            title.innerHTML = results[key];
+            title.innerHTML = movieList[key][1];
             li.appendChild(title);
             
             let deleteButton = document.createElement("button");
-            addButton.innerHTML = "Delete Movie";
-            addButton.addEventListener("click", function() {deleteMovie(title.innerHTML)});
+            deleteButton.innerHTML = "Delete Movie";
+            deleteButton.addEventListener("click", function() {deleteMovie(movieID)});
             li.appendChild(deleteButton);
 
-            savedMovies.appendChild(li);
-            numMovies++;
+            ol.appendChild(li);
         }
     };
 
     request.send()
 }
 
-function addMovie(title) {}
+function addMovie(movieID) {
+    let username = currentUser;
+    let url = "http://127.0.0.1:5000/addMovie/" + username + "/" + movieID;
+    request.open("PUT", url);
+    request.onload = function() {
+        if (request.status >= 400) return;
+        getMovieList(currentUser); // Refreshes Saved Movies
+    };
+    request.send();
+}
 
-function deleteMovie(title) {}
+function deleteMovie(movieID) {
+    let username = currentUser;
+    let url = "http://127.0.0.1:5000/deleteMovie/" + username + "/" + movieID;
+    request.open("DELETE", url);
+    request.onload = function() {
+        if (request.status >= 400) return;
+        getMovieList(currentUser); // Refreshes Saved Movies
+    };
+    request.send();
+}
 
 function search() {
     let searchBox = document.getElementById("search-box")
@@ -91,7 +114,7 @@ function search() {
 
     request.onload = function() {
         if (request.status >= 400) return;
-        results = request.response;
+        let results = request.response;
 
         for (var key in results) {
             if (!results.hasOwnProperty(key)) {
@@ -101,14 +124,16 @@ function search() {
             let li = document.createElement("li");
             li.id = "result" + numResults.toString();
             li.className = "search-result";
+
+            let movieID = results[key][0]
             
             let title = document.createElement("p");
-            title.innerHTML = results[key];
+            title.innerHTML = results[key][1];
             li.appendChild(title);
 
             let addButton = document.createElement("button");
             addButton.innerHTML = "Add Movie";
-            addButton.addEventListener("click", function() {addMovie(title.innerHTML)});
+            addButton.addEventListener("click", function() {addMovie(movieID)});
             li.appendChild(addButton);
             
             ol.appendChild(li);

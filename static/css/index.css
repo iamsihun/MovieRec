@@ -31,6 +31,7 @@ h1, h3, h5 {
     list-style: none;
     text-align: left;
     padding: 1%;
+    overflow: auto;
 }
 
 .movie {

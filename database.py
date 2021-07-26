@@ -9,7 +9,7 @@ cursor = db.cursor()
 def createUser(username):
     if userExists(username):
         return False
-    cmd = 'INSERT INTO Users(username, movieList) VALUES(\'{}\', NULL)'.format(username) 
+    cmd = 'INSERT INTO Users(username, favorite_movie) VALUES(\'{}\', NULL)'.format(username) 
     cursor.execute(cmd)
     db.commit()
     return True
@@ -26,22 +26,27 @@ def deleteUser(username):
 def getMovieList(username):
     if userExists(username) is False:
         return None
-    cmd = 'SELECT movieList FROM Users WHERE username=\'{}\''.format(username) #return user's movielist
+    cmd = 'SELECT movieID, Title FROM Movie NATURAL JOIN SavedMovies WHERE username=\'{}\''.format(username) #return user's movielist
     cursor.execute(cmd)
     results = cursor.fetchall()
     return list(results)
 
-# Adds movie to given user's movie list if the user exists:
+# Returns True if the movie was added to the given user's movie list, False otherwise:
 def addMovie(username, movieID):
-    if userExists() is False:
-        return
-    ...
+    if userExists(username) is False:
+        return False
+    cmd = 'INSERT INTO SavedMovies(username, movieID) VALUES(\'{}\', \'{}\')'.format(username, movieID) 
+    cursor.execute(cmd)
+    db.commit()
+    return True
 
-# Deletes the given movie from the given user's movie list if the user exists:
+# Returns True if the movie was deleted from the given user's movie list, False otherwise:
 def deleteMovie(username, movieID):
-    if userExists() is False:
-        return
-    ...
+    if userExists(username) is False:
+        return False
+    cmd = 'DELETE FROM SavedMovies WHERE username=\'{}\' AND movieID=\'{}\''.format(username, movieID)
+    cursor.execute(cmd)
+    return True
 
 # Returns True if given user exists, False otherwise:
 def userExists(username):
@@ -55,7 +60,7 @@ def userExists(username):
 
 def search_title(text):
     # Code to search database for movies by title:
-    cmd = "SELECT Title FROM Movie WHERE Title LIKE \'%{}%\';".format(text)
+    cmd = "SELECT movieID, Title FROM Movie WHERE Title LIKE \'%{}%\';".format(text)
     cursor.execute(cmd)
     results = cursor.fetchall()
     return list(results)
@@ -109,6 +114,3 @@ def get_maxID_movies():
     cursor.execute(cmd)
     result = cursor.fetchall()
     return result[0][0]
-
-# if __name__ == '__main__':
-#     print(get_maxID_movies())

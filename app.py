@@ -1,5 +1,4 @@
 from flask import Flask, render_template, jsonify
-from mysql.connector.utils import print_buffer
 import database
 
 app = Flask(__name__)
@@ -47,8 +46,10 @@ def getMovieList(username):
 @app.route('/addMovie/<username>/<movieID>', methods=['PUT'])
 def addMovie(username, movieID):
   try:
-    database.addMovie(username, movieID)
-    return "Movie successfully added!", 200
+    if database.addMovie(username, movieID):
+      return "Movie successfully added!", 200
+    else:
+      return "User doesn't exist.", 400
   except:
     return "Could not add movie.", 404
 
@@ -56,8 +57,10 @@ def addMovie(username, movieID):
 @app.route('/deleteMovie/<username>/<movieID>', methods=['DELETE'])
 def deleteMovie(username, movieID):
   try:
-    database.deleteMovie(username, movieID)
-    return "Movie successfully deleted!", 200
+    if database.deleteMovie(username, movieID):
+      return "Movie successfully deleted!", 200
+    else:
+      return "User doesn't exist.", 400
   except:
     return "Could not delete movie.", 404
 
