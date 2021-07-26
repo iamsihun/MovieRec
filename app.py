@@ -30,6 +30,24 @@ def deleteUser(username):
   except:
     return "Could not delete user.", 404
 
+@app.route('/getFavoriteMovie/<username>')
+def getFavoriteMovie(username):
+  try:
+    movie = database.getFavoriteMovie(username)
+    return jsonify(movie), 200
+  except:
+    return jsonify({}), 404
+
+@app.route('/updateFavoriteMovie/<username>/<movieID>', methods=['PUT'])
+def updateUserFavoriteMovie(username, movieID):
+  try:
+    if database.updateUserFavoriteMovie(username, movieID):
+      return "Updated user's favorite movie!", 200
+    else:
+      return "Invalid username or movieID.", 400
+  except:
+    return "Could not update user's favorite movie.", 404
+
 # Returns the movie list of the given user:
 @app.route('/getMovieList/<username>')
 def getMovieList(username):

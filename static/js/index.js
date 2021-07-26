@@ -11,7 +11,8 @@ function createUser() {
         if (request.status >= 400) return;
         currentUser = username;
         document.getElementById("current-user").innerHTML = "Current User: <strong>" + currentUser + "</strong>";
-        savedMovies.innerHTML = "";
+        document.getElementById("favorite-movie").innerHTML = "Favorite Movie: ________";
+        document.getElementById("saved-movies-list").innerHTML = "";
     };
 
     request.send();
@@ -25,10 +26,37 @@ function deleteUser() {
     request.onload = function() {
         if (request.status >= 400) return;
         currentUser = "";
-        document.getElementById("current-user").innerHTML = "Current User: <strong>" + currentUser + "</strong>";
-        savedMovies.innerHTML = "";
+        document.getElementById("current-user").innerHTML = "Current User: ________";
+        document.getElementById("favorite-movie").innerHTML = "Favorite Movie: ________";
+        document.getElementById("saved-movies-list").innerHTML = "";
     };
 
+    request.send();
+}
+
+function getFavoriteMovie() {
+    let url = "http://127.0.0.1:5000/getFavoriteMovie/" + currentUser;
+    request.open("GET", url);
+    request.responseType = "json";
+    request.onload = function() {
+        if (request.status >= 400) return;
+        let movie = request.response
+        if (movie[0] != undefined) {
+            document.getElementById("favorite-movie").innerHTML = "Favorite Movie: <strong>" + movie[0] + "</strong>";
+        } else {
+            document.getElementById("favorite-movie").innerHTML = "Favorite Movie: ________";
+        }
+    }
+    request.send();
+}
+
+function updateFavoriteMovie(movieID, title) {
+    let url = "http://127.0.0.1:5000/updateFavoriteMovie/" + currentUser + "/" + movieID;
+    request.open("PUT", url)
+    request.onload = function() {
+        if (request.status >= 400) return;
+        document.getElementById("favorite-movie").innerHTML = "Favorite Movie: <strong>" + title + "</strong>";
+    }
     request.send();
 }
 
@@ -73,6 +101,8 @@ function getMovieList(username) {
 
             ol.appendChild(li);
         }
+
+        getFavoriteMovie();
     };
 
     request.send()
@@ -135,6 +165,11 @@ function search() {
             addButton.innerHTML = "Add Movie";
             addButton.addEventListener("click", function() {addMovie(movieID)});
             li.appendChild(addButton);
+
+            let favoriteButton = document.createElement("button");
+            favoriteButton.innerHTML = "Set As Favorite";
+            favoriteButton.addEventListener("click", function() {updateFavoriteMovie(movieID, title.innerHTML)});
+            li.appendChild(favoriteButton);
             
             ol.appendChild(li);
             numResults++;

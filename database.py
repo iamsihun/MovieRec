@@ -23,6 +23,27 @@ def deleteUser(username):
     db.commit()
     return True
 
+# Returns favorite movie of given user:
+def getFavoriteMovie(username):
+    cmd = "SELECT Title from Users u JOIN Movie m ON u.favorite_movie = m.movieID where username = \'{}\'".format(username)
+    try:
+        cursor.execute(cmd)
+        results = cursor.fetchall()
+        return list(results)
+    except:
+        return None
+
+#Updates User's favorite Movie_id
+#args: username, new favorite movie_id
+def updateUserFavoriteMovie(username, new_favorite_movie):
+    cmd = "UPDATE Users SET favorite_movie = {} WHERE username = \'{}\'".format(new_favorite_movie, username)
+    try:
+        cursor.execute(cmd)
+        db.commit()
+        return True
+    except:
+        return False
+
 # Returns the movie list of the given user. Returns None if the user doesn't exist.
 def getMovieList(username):
     if userExists(username) is False:
@@ -50,19 +71,6 @@ def deleteMovie(username, movieID):
     db.commit()
     return True
 
-
-#Updates User's favorite Movie_id
-#args: username, new favorite movie_id
-def updateUserFavoriteMovie(username, new_favorite_movie):
-    cmd = "UPDATE Users SET favorite_movie = {} WHERE username = \'{}\'".format(new_favorite_movie, username)
-    try:
-        cursor.execute(cmd)
-        db.commit()
-    except:
-        return
-
-
-
 # Returns True if given user exists, False otherwise:
 def userExists(username):
     cmd = 'SELECT EXISTS(SELECT * FROM Users WHERE username = \'{}\')'.format(username)
@@ -72,11 +80,6 @@ def userExists(username):
         return False
     else: # Username exists
         return True
-
-
-
-
-
 
 def search_title(text):
     # Code to search database for movies by title:
