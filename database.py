@@ -50,6 +50,19 @@ def deleteMovie(username, movieID):
     db.commit()
     return True
 
+
+#Updates User's favorite Movie_id
+#args: username, new favorite movie_id
+def updateUserFavoriteMovie(username, new_favorite_movie):
+    cmd = "UPDATE Users SET favorite_movie = {} WHERE username = \'{}\'".format(new_favorite_movie, username)
+    try:
+        cursor.execute(cmd)
+        db.commit()
+    except:
+        return
+
+
+
 # Returns True if given user exists, False otherwise:
 def userExists(username):
     cmd = 'SELECT EXISTS(SELECT * FROM Users WHERE username = \'{}\')'.format(username)
@@ -59,6 +72,11 @@ def userExists(username):
         return False
     else: # Username exists
         return True
+
+
+
+
+
 
 def search_title(text):
     # Code to search database for movies by title:
@@ -116,3 +134,8 @@ def get_maxID_movies():
     cursor.execute(cmd)
     result = cursor.fetchall()
     return result[0][0]
+
+
+# if __name__ == '__main__':
+#     updateUserFavoriteMovie('abc', 20)
+    
