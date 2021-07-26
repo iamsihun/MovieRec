@@ -20,6 +20,7 @@ def deleteUser(username):
         return False
     cmd = 'DELETE FROM Users WHERE username=\'{}\''.format(username)
     cursor.execute(cmd)
+    db.commit()
     return True
 
 # Returns the movie list of the given user. Returns None if the user doesn't exist.
@@ -46,6 +47,7 @@ def deleteMovie(username, movieID):
         return False
     cmd = 'DELETE FROM SavedMovies WHERE username=\'{}\' AND movieID=\'{}\''.format(username, movieID)
     cursor.execute(cmd)
+    db.commit()
     return True
 
 # Returns True if given user exists, False otherwise:
