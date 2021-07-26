@@ -17,7 +17,7 @@
             <div id="account-manager">
                 <h3>Account Management</h3>
 
-                <p id="current-user">Current User: </p>
+                <p id="current-user">Current User: ________</p>
 
                 <form onsubmit="return false">
                     <p>Create New User:</p>
@@ -49,6 +49,18 @@
                 <button id="search-button" onclick="search()">Submit</button>
             </form>
             <ol id="search-results"></ol>
+        </div>
+
+        <div class="grid-container">
+            <div id="aq1">
+                <button onclick="advanced_query(1)">Advanced Query 1</button>
+                <ol id="aq1-results"></ol>
+            </div>
+
+            <div id="aq2">
+                <button onclick="advanced_query(2)">Advanced Query 2</button>
+                <ol id="aq2-results"></ol>
+            </div>
         </div>
     </main>
     <script src="{{ url_for('static', filename='js/index.js') }}" charset="utf-8"></script>

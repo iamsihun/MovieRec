@@ -144,6 +144,29 @@ function search() {
     request.send();
 }
 
-function aq1() {}
+function advanced_query(queryID) {
+    let ol = document.getElementById("aq" + queryID.toString() + "-results");
+    ol.innerHTML = ""; // Resets Query Results
 
-function aq2() {}
+    let url = "http://127.0.0.1:5000/aq" + queryID;
+    request.open("GET", url);
+    request.responseType = "json";
+
+    request.onload = function() {
+        if (request.status >= 400) return;
+        let results = request.response;
+
+        for (var key in results) {
+            if (!results.hasOwnProperty(key)) {
+                break;
+            }
+
+            let li = document.createElement("li");
+            li.className = "search-result";
+            li.innerHTML = results[key];
+            ol.appendChild(li)
+        }
+    };
+
+    request.send();
+}
