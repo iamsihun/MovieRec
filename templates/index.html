@@ -16,22 +16,30 @@
         <div class="grid-container">
             <div id="account-manager">
                 <h3>Account Management</h3>
-    
-                <p>Current User: <p id="current-user"></p></p>
-    
-                <form>
-                    <input type="text" id="usernameBox" placeholder="Enter Username...">
-                    <button id="login-button" onclick="login()">Submit</button>
+
+                <p id="current-user">Current User: </p>
+
+                <form onsubmit="return false">
+                    <p>Create New User:</p>
+                    <input type="text" id="userToCreate" placeholder="Enter Username...">
+                    <button id="createUser-button" onclick="createUser()">Submit</button>
                 </form>
-                            
                 <br>
-                <button onclick="loadMovies()">View Saved Movies</button>
-                <button id="delete-button" onclick="deleteUser()">Delete Current Account</button>
+                <form onsubmit="return false">
+                    <p>Switch Current User:</p>
+                    <input type="text" id="userToSwitchTo" placeholder="Enter Username...">
+                    <button id="switchUser-button" onclick="getMovieList()">Submit</button>
+                </form>
+                <br>
+                <form onsubmit="return false">
+                    <p>Delete Current User:</p>
+                    <button id="deleteUser-button" onclick="deleteUser()">Submit</button>
+                </form>
             </div>
     
-            <div id="saved-movies-box">
+            <div id="saved-movies-container">
                 <h3>Saved Movies</h3>
-                <ol id="saved-movies"></ol>
+                <ol id="saved-movies-list"></ol>
             </div>
         </div>
 

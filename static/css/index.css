@@ -16,16 +16,18 @@ h1, h3, h5 {
 #account-manager {
     background-color: whitesmoke;
     border: 1px solid black;
+    margin: 1%;
+    padding: 1%;
 }
 
-#saved-movies-box {
+#saved-movies-container {
     background-color: lightgreen;
     border: 1px solid black;
     margin: 1%;
     padding: 1%;
 }
 
-#saved-movies {
+#saved-movies-list {
     list-style: none;
     text-align: left;
     padding: 1%;
@@ -43,6 +45,8 @@ h1, h3, h5 {
     margin: 1%;
     padding: 1%;
     min-height: 10rem;
+    max-height: 10rem;
+    overflow: auto;
 }
 
 .search-result {
