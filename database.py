@@ -88,6 +88,20 @@ def search_title(text):
     results = cursor.fetchall()
     return list(results)
 
+def cast(movieID):
+    # Find actors for a movie using movieID
+    cmd = "SELECT actorName FROM Movie NATURAL JOIN Acts NATURAL JOIN CastMember WHERE movieID = {};".format(movieID)
+    cursor.execute(cmd)
+    results = cursor.fetchall()
+    return list(results)
+
+def director(movieID):
+    # Find the director for a movie using movieID
+    cmd = "SELECT crewName FROM Movie NATURAL JOIN WorksOn NATURAL JOIN CrewMember WHERE movieID = {} AND Job = \'Director\';".format(movieID)
+    cursor.execute(cmd)
+    results = cursor.fetchall()
+    return list(results)
+
 def advanced_query_1():
    cmd = "SELECT actorName, Title, Budget FROM Movie m JOIN Acts a USING(movieID) JOIN CastMember c USING (actorID) WHERE Budget >= ALL(SELECT Budget FROM Movie m2 JOIN Acts a2 USING(movieID) JOIN CastMember c2 USING (actorID) WHERE c2.actorName = c.actorName) AND Budget > 0 ORDER BY Budget DESC;"
    cursor.execute(cmd)
