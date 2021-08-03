@@ -86,7 +86,23 @@ def deleteMovie(username, movieID):
 @app.route('/search/<text>')
 def search(text):
   try:
-    results = database.search_title(text)
+    results = database.search(text)
+    return jsonify(results), 200
+  except:
+    return jsonify({}), 404
+
+@app.route('/getMovieData/<movieID>')
+def getMovieData(movieID):
+  try:
+    data = database.getMovieData(movieID)
+    return jsonify(data), 200
+  except:
+    return jsonify({}), 404
+
+@app.route('/getTopActors')
+def getTopActors():
+  try:
+    results = database.actor_tiers()
     return jsonify(results), 200
   except:
     return jsonify({}), 404

@@ -1,5 +1,4 @@
 # File to write database-related code in:
-
 import mysql.connector as conn
 
 db = conn.connect(host = '35.202.71.75', user = 'root', password = 'movierec', database = 'movierec')
@@ -81,40 +80,60 @@ def userExists(username):
     else: # Username exists
         return True
 
-def search_title(text):
-    # Code to search database for movies by title:
+# Code to search database for movies by title:
+def search(text):
     cmd = "SELECT movieID, Title FROM Movie WHERE Title LIKE \'%{}%\';".format(text)
     cursor.execute(cmd)
     results = cursor.fetchall()
     return list(results)
 
-def cast(movieID):
-    # Find actors for a movie using movieID
-    cmd = "SELECT actorName FROM Movie NATURAL JOIN Acts NATURAL JOIN CastMember WHERE movieID = {};".format(movieID)
+def getMovieData(movieID):
+    data = {}
+    
+    cmd = "SELECT Title FROM Movie WHERE movieID = \'{}\';".format(movieID)
     cursor.execute(cmd)
     results = cursor.fetchall()
-    return list(results)
 
-def director(movieID):
-    # Find the director for a movie using movieID
-    cmd = "SELECT crewName FROM Movie NATURAL JOIN WorksOn NATURAL JOIN CrewMember WHERE movieID = {} AND Job = \'Director\';".format(movieID)
-    cursor.execute(cmd)
-    results = cursor.fetchall()
-    return list(results)
+    movieData = list(results)
+    genres = getGenres(movieID)
+    director = getDirector(movieID)
+    cast = getCast(movieID)
 
-def genre_list(movieID):
-    # Find the genres for a movie using movieID
+    data['MovieData'] = movieData
+    data['Genres'] = genres
+    data['Director'] = director
+    data['Cast'] = cast
+
+    return data
+
+# Find the genres for a movie using movieID
+def getGenres(movieID):
     cmd = "SELECT genreName FROM Movie NATURAL JOIN Belong NATURAL JOIN Genre WHERE movieID = {};".format(movieID)
     cursor.execute(cmd)
     results = cursor.fetchall()
     return list(results)
 
-def actor_tiers():
-    # Call the stored procedure
-    cmd = "CALL actor_tiers();"
+# Find the director for a movie using movieID
+def getDirector(movieID):
+    cmd = "SELECT crewName FROM Movie NATURAL JOIN WorksOn NATURAL JOIN CrewMember WHERE movieID = {} AND Job = \'Director\';".format(movieID)
     cursor.execute(cmd)
     results = cursor.fetchall()
     return list(results)
+
+# Find actors for a movie using movieID
+def getCast(movieID):
+    cmd = "SELECT actorName FROM Movie NATURAL JOIN Acts NATURAL JOIN CastMember WHERE movieID = {};".format(movieID)
+    cursor.execute(cmd)
+    results = cursor.fetchall()
+    return list(results)
+
+# Call the stored procedure
+def actor_tiers():
+    cursor.callproc('actor_tiers')
+    results = []
+    for result in cursor.stored_results():
+        results = result.fetchall()
+    return results
 
 def advanced_query_1():
    cmd = "SELECT actorName, Title, Budget FROM Movie m JOIN Acts a USING(movieID) JOIN CastMember c USING (actorID) WHERE Budget >= ALL(SELECT Budget FROM Movie m2 JOIN Acts a2 USING(movieID) JOIN CastMember c2 USING (actorID) WHERE c2.actorName = c.actorName) AND Budget > 0 ORDER BY Budget DESC;"

@@ -48,6 +48,7 @@
             <form onsubmit="return false">
                 <input id="search-box" type="text" placeholder="Search...">
                 <button id="search-button" onclick="search()">Submit</button>
+                <button id="topActors-button", onclick="getTopActors()">Show Top Actors</button>
             </form>
             <ol id="search-results"></ol>
         </div>
@@ -62,6 +63,23 @@
                 <button onclick="advanced_query(2)">Advanced Query 2</button>
                 <ol id="aq2-results"></ol>
             </div>
+        </div>
+
+        <!--
+            Code for Movie Details Modal
+            Source: https://www.w3schools.com/howto/howto_css_modals.asp
+        -->
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2 id="modal-movieTitle"></h2>
+                </div>
+                
+                <div class="modal-body">
+                    <p id="modal-movieData"></p>
+                </div>
+            </div>  
         </div>
     </main>
     <script src="{{ url_for('static', filename='js/index.js') }}" charset="utf-8"></script>

@@ -1,6 +1,29 @@
 const request = new XMLHttpRequest();
 let currentUser = "";
 
+/*
+Code for Movie Details Modal
+Source: https://www.w3schools.com/howto/howto_css_modals.asp
+*/
+
+// Get the modal
+let modal = document.getElementById("myModal");
+
+// Get the <span> element that closes the modal
+let span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
 function createUser() {
     let usernameBox = document.getElementById("userToCreate");
     let username = usernameBox.value;
@@ -99,6 +122,11 @@ function getMovieList(username) {
             deleteButton.addEventListener("click", function() {deleteMovie(movieID)});
             li.appendChild(deleteButton);
 
+            let detailsButton = document.createElement("button");
+            detailsButton.innerHTML = "Movie Details";
+            detailsButton.addEventListener("click", function() {getMovieData(movieID)});
+            li.appendChild(detailsButton);
+
             ol.appendChild(li);
         }
 
@@ -170,7 +198,77 @@ function search() {
             favoriteButton.innerHTML = "Set As Favorite";
             favoriteButton.addEventListener("click", function() {updateFavoriteMovie(movieID, title.innerHTML)});
             li.appendChild(favoriteButton);
+
+            let detailsButton = document.createElement("button");
+            detailsButton.innerHTML = "Movie Details";
+            detailsButton.addEventListener("click", function() {getMovieData(movieID)});
+            li.appendChild(detailsButton);
             
+            ol.appendChild(li);
+            numResults++;
+        }
+    };
+
+    request.send();
+}
+
+function getMovieData(movieID) {
+    let url = "http://127.0.0.1:5000/getMovieData/" + movieID;
+    request.open("GET", url);
+    request.responseType = "json";
+
+    request.onload = function() {
+        if (request.status >= 400) return;
+        let data = request.response;
+        
+        let modalHeader = document.getElementById("modal-movieTitle");
+        modalHeader.innerHTML = data["MovieData"]
+
+        let modalContent = document.getElementById("modal-movieData");
+        modalContent.innerHTML = "<p> Genres: " + data["Genres"] + "</p>" + "<p> Director: " + data["Director"] + "</p>" + "<p> Cast: " + data["Cast"] + "</p>";
+
+        modal.style.display = "block";
+    };
+
+    request.send();
+}
+
+function getTopActors() {
+    let ol = document.getElementById("search-results");
+    ol.innerHTML = ""; // Resets Search Results
+    numResults = 0;
+
+    let url = "http://127.0.0.1:5000/getTopActors";
+    request.open("GET", url);
+    request.responseType = 'json';
+
+    request.onload = function() {
+        if (request.status >= 400) return;
+        let results = request.response;
+        // console.log(results);
+
+        let li = document.createElement("li");
+        li.id = "result" + numResults.toString();
+        li.className = "search-result";
+
+        let columnNames = document.createElement("li");
+        columnNames.innerHTML = "<strong>Actor's Name | Number of Movies | Average Budget | Maximum Budget | Tier</strong>";
+        li.appendChild(columnNames)
+        ol.appendChild(li);
+        
+        for (var key in results) {
+            if (!results.hasOwnProperty(key)) {
+                break;
+            }
+
+            let li = document.createElement("li");
+            li.id = "result" + numResults.toString();
+            li.className = "search-result";
+
+            let actor = document.createElement("p");
+            actor.innerHTML = results[key][1] + " | " + results[key][2]  + " | $" + results[key][3].toFixed(2)  + " | $" + results[key][4]  + " | " + results[key][5];
+            li.appendChild(actor);
+
             ol.appendChild(li);
             numResults++;
         }
