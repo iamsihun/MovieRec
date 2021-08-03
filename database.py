@@ -1,5 +1,8 @@
 # File to write database-related code in:
 import mysql.connector as conn
+import redis
+import json
+r_conn = redis.Redis()
 
 db = conn.connect(host = '35.202.71.75', user = 'root', password = 'movierec', database = 'movierec')
 cursor = db.cursor()
@@ -26,9 +29,15 @@ def deleteUser(username):
 def getFavoriteMovie(username):
     cmd = "SELECT Title from Users u JOIN Movie m ON u.favorite_movie = m.movieID where username = \'{}\'".format(username)
     try:
+        cached = r_conn.get(username)
+        if cached is not None:
+            return json.loads(cached)
         cursor.execute(cmd)
         results = cursor.fetchall()
+        #return list(results)
+        r_conn.set(json.dumps(list(results)))
         return list(results)
+
     except:
         return None
 
