@@ -109,6 +109,13 @@ def genre_list(movieID):
     results = cursor.fetchall()
     return list(results)
 
+def actor_tiers():
+    # Call the stored procedure
+    cmd = "CALL actor_tiers();"
+    cursor.execute(cmd)
+    results = cursor.fetchall()
+    return list(results)
+
 def advanced_query_1():
    cmd = "SELECT actorName, Title, Budget FROM Movie m JOIN Acts a USING(movieID) JOIN CastMember c USING (actorID) WHERE Budget >= ALL(SELECT Budget FROM Movie m2 JOIN Acts a2 USING(movieID) JOIN CastMember c2 USING (actorID) WHERE c2.actorName = c.actorName) AND Budget > 0 ORDER BY Budget DESC;"
    cursor.execute(cmd)
