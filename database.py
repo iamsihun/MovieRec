@@ -82,7 +82,7 @@ def userExists(username):
 
 # Code to search database for movies by title:
 def search(text):
-    cmd = "SELECT movieID, Title FROM Movie WHERE Title LIKE \'%{}%\';".format(text)
+    cmd = "SELECT movieID, Title FROM Movie WHERE Title LIKE '%{}%' UNION SELECT movieID, Title FROM Movie NATURAL JOIN Acts NATURAL JOIN CastMember WHERE actorName LIKE '%{}%'".format(text, text)
     cursor.execute(cmd)
     results = cursor.fetchall()
     return list(results)
