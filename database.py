@@ -141,7 +141,7 @@ def advanced_query_1():
    return list(cursor.fetchall())
 
 def advanced_query_2():
-   cmd = "SELECT movieID, Title, Budget, genreName FROM Movie m JOIN Belong b USING(movieID) JOIN Genre g USING (genreID) WHERE Budget >= ALL(SELECT Budget FROM Movie m2 JOIN Belong b2 USING(movieID) JOIN Genre g2 USING (genreID) WHERE g2.genreName = g.genreName) ORDER BY Budget DESC;"
+   cmd = "SELECT genreName, Title, Budget FROM Movie m JOIN Belong b USING(movieID) JOIN Genre g USING (genreID) WHERE Budget >= ALL(SELECT Budget FROM Movie m2 JOIN Belong b2 USING(movieID) JOIN Genre g2 USING (genreID) WHERE g2.genreName = g.genreName) ORDER BY Budget DESC;"
    cursor.execute(cmd)
    return list(cursor.fetchall())
 

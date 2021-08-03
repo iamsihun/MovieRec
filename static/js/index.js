@@ -280,6 +280,17 @@ function getTopActors() {
 function advanced_query(queryID) {
     let ol = document.getElementById("aq" + queryID.toString() + "-results");
     ol.innerHTML = ""; // Resets Query Results
+    
+    let li = document.createElement("li");
+    li.className = "search-result";
+
+    if (queryID == 1) {
+        li.innerHTML = "<strong>Actor's Name | Title | Budget</strong>";
+    } else if (queryID == 2) {
+        li.innerHTML = "<strong>Genre | Title | Budget</strong>";
+    }
+
+    ol.appendChild(li)
 
     let url = "http://127.0.0.1:5000/aq" + queryID;
     request.open("GET", url);
