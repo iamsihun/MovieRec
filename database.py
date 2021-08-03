@@ -29,13 +29,10 @@ def deleteUser(username):
 def getFavoriteMovie(username):
     cmd = "SELECT Title from Users u JOIN Movie m ON u.favorite_movie = m.movieID where username = \'{}\'".format(username)
     try:
-        cached = r_conn.get(username)
-        if cached is not None:
-            return json.loads(cached)
         cursor.execute(cmd)
         results = cursor.fetchall()
         #return list(results)
-        r_conn.set(json.dumps(list(results)))
+        #r_conn.set(username, json.dumps(list(results)))
         return list(results)
 
     except:
