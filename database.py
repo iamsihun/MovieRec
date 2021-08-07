@@ -1,8 +1,7 @@
 # File to write database-related code in:
 import mysql.connector as conn
-import redis
 import json
-r_conn = redis.Redis()
+
 
 db = conn.connect(host = '35.202.71.75', user = 'root', password = 'movierec', database = 'movierec')
 cursor = db.cursor()
